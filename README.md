@@ -1,117 +1,72 @@
-# dsh-skills-1c
+# skills-1c — универсальная база знаний по 1С (для людей и агентов)
 
-***
-##  С чего начать?
-Для того, чтобы облегчить знакомство с сервисом GitFlic и первые шаги в нём, мы подготовили несколько рекомендаций.  
-Уже опытный пользователь? Отредактируйте данный **README** файл по своему усмотрению.  
-Не знаете что добавить в него? Перейдите в раздел `"Что должен содержать README файл"`, в котором описаны ключевые компоненты хорошего README файла. 
+Каталог для повторного использования при обновлениях любых конфигураций 1С на платформе 8.3.
+Знания проверены на практике (обновление ERP 2.5.27.98 + модуля УАТ, Октябрь 2026), но материал и
+инструменты не привязаны ни к конфигурации, ни к билду платформы: **подходит любая установленная версия
+`8.3.27.*` и ниже** (примеры помечены, конкретные версии/поставки — из проекта проверки).
 
-## Добавьте свои файлы
-Если вы решили начать разработку проекта с создания репозитория в нашем сервисе, тогда клонируйте себе данный репозиторий следующим образом:
+## Разделы
 
+| Раздел | Что внутри |
+|---|---|
+| [`1cv8/`](1cv8/README.md) | запуск `1cv8.exe` (пользовательский режим и Конфигуратор), окружение, CLI, грабли, тайминги |
+| [`config/`](config/README.md) | выгрузка/загрузка конфигурации (XML и `.cf`), формат выгрузки, поддержка поставщиков, правка XML, правила, `.cf/.cfu/.dt`; скрипты сравнения деревьев и манифестов |
+| [`config/support/`](config/support-state.md) | разбор и правка `Ext\ParentConfigurations.bin`: уровни, флаги, имена поставки (документ — [`support-state.md`](config/support-state.md)) |
+| [`config/supply/`](config/supply/README.md) | **несколько поставок в одной конфигурации**: правила, какая поставка главная, сборка `.bin`, загрузка и приёмка, расчёт уровней поддержки 0/1 |
+| [`config/update/`](config/update/README.md) | обновление конфигурации: конвейер, сведение типов и составные типы, слияние модулей BSL, слияние объектов, проверка форм, диагностика, приёмка; инструменты сборки |
+| [`config/update/SSL/`](config/update/SSL/README.md) | **специфика БСП** (основа типовых конфигураций): `Predefined.xml` (`ИдентификаторыОбъектовМетаданных`), списки ограничения доступа, план обмена БИД |
+| [`other/`](other/README.md) | отчёты и передача, журнал решений (пример проекта), ограничения, карта артефактов, утилиты |
 
-```
-git clone https://gitflic.ru/project/aph-eco/dsh-skills-1c.git
-cd dsh-skills-1c
-**добавьте первые файлы вашего проекта**
-git add .
-git commit -m "Первый коммит"
-git push -u origin master
-```
+## Изменения хранилища
 
-Уже что-то делали в проекте? В таком случае инициализируйте гит-репозиторий в корне проекта и добавьте текущий репозиторий как удалённый репозиторий:
+Владелец и администратор — пользователь `KulshaAV` (каталог `skills-1c`) и агент, действующий по его прямому поручению.
+**Другим агентам вносить правки запрещено:** только чтение и предложения текстом (файл → что изменить →
+почему → чем проверено). Полный регламент, порядок изменения и требования к фактам —
+[`AGENTS.md`](AGENTS.md).
 
-```
-cd existing_folder
-git init
-git remote add origin https://gitflic.ru/project/aph-eco/dsh-skills-1c.git
-git clone
-**добавьте новые файлы**
-git add .
-git commit -m "Новый коммит"
-git push -u origin master
-```
-***
+## Быстрый старт
 
+- **Не знаю, где установлена 1С / какая версия** → [`1cv8/environment.md`](1cv8/environment.md), «Платформа»
+  (подходит любая `8.3.27.*` и ниже; путь к `1cv8.exe` берётся с машины)
+- Нужно запустить 1С из командной строки → [`1cv8/launch-modes.md`](1cv8/launch-modes.md)
+- Не запускается / странный код возврата → [`1cv8/cli-gotchas.md`](1cv8/cli-gotchas.md)
+- Надо выгрузить конфигурацию в XML → [`config/dump-to-xml.md`](config/dump-to-xml.md)
+- Надо собрать конфигурацию из XML → [`config/load-from-xml.md`](config/load-from-xml.md)
+- **Проверить синтаксис модулей** → [`config/checkmodules.md`](config/checkmodules.md)
+  (запускать `-ThinClient -Server`; без флагов проверка ничего не делает)
+- Нужна поддержка двух поставщиков → [`config/support.md`](config/support.md)
+- **В `.bin` несколько поставок / надо собрать такой файл** → [`config/supply/README.md`](config/supply/README.md)
+  (главная поставка первой, `flag=0` обеим, приёмка полным циклом)
+- **Снять / поставить объект на поддержку в XML-выгрузке** → [`config/support-state.md`](config/support-state.md)
+  (инструмент — `config/support-state.ps1`); жёсткие правила — [`config/rules.md`](config/rules.md)
+- **Добавить реквизит / новый объект / подсистему в выгрузку** → [`config/edit-xml.md`](config/edit-xml.md)
+- Обновление с сохранением доработок → [`config/update/pipeline.md`](config/update/pipeline.md)
+- **Проверить, что доработки не потеряны, а расхождение не выросло** → [`config/update/delta-invariance.md`](config/update/delta-invariance.md)
+  (инструмент — `config/update/delta-check.js`)
+- **Сводятся типы данных / составные типы** → [`config/update/defined-types.md`](config/update/defined-types.md) (обязательно к прочтению: потеря типов = потеря данных)
+- Слияние модулей с учётом имён методов → [`config/update/merge-modules.md`](config/update/merge-modules.md)
+- **Грабли слияния и приёмки** → [`config/update/traps.md`](config/update/traps.md)
+- **Доказать соответствие поставке (аудит отличий)** → [`config/update/vendor-audit.md`](config/update/vendor-audit.md)
+- Проверка форм → [`config/update/check-forms.md`](config/update/check-forms.md)
+- Не грузится конфигурация → [`config/update/diagnostics.md`](config/update/diagnostics.md)
 
-# Что должен содержать README файл
+## Инструменты
 
+Скрипты лежат рядом с документами своих разделов (3 раздела: `1cv8`, `config`, `other`; в `config\` —
+подразделы `support\`, `supply\`, `update\`, в `update\` — БСП-часть `SSL\`):
 
-Прежде всего, стоит понимать, что `README.md` — это краткая документация. Это первое, что видит человек, который открывает репозиторий. Поэтому здесь важно дать достаточно информации о проекте и рассказать, что он из себя представляет.
-Ключевая информация, которую должен содержать README файл:
+| Где | Инструменты |
+|---|---|
+| `config\` | `support-state.ps1` (состояние поддержки в `.bin`: просмотр/правка), `manifest.js` (ConfigDumpInfo → JSON), `hash.js` + `filediff.js` (SHA1-сравнение деревьев), `cmp.js`, `diff.js` |
+| `config\supply\` | `bin_summary.js`, `bin_diff.js` (структура и сравнение `.bin`), `build_two_deliveries_bin.js` (сборка `.bin` с несколькими поставками), `load_tree.ps1`, `accept_cf.ps1` (загрузка дерева и приёмка `.cf` полным циклом), `support-levels.js` (расчёт уровней поддержки 0/1), `support-levels-multi.js` (то же сразу для всех поставок `.bin`) |
+| `config\update\` | `skel.js`, `copyfrom.js`, `addchild.js`, `addattr.js` (каркас); `objmerge.js`, `syncobjfiles.js` (элементы объектов); `mergetypes.js` (сведение типов); `blockmerge.js`, `merge3v2.js`, `merge3.js` (модули); `multirename2.js`, `renamerefs.js`, `prunetypes.js`, `prunerefs.js`, `fixconfig.js`, `fixrefs.js` (ссылки); `mergefrom.js`, `filter_changed.js`, `delta-objects.js`, `reapply-changes.js` (дельта модуля); `addregrec.js`, `refscan.js`, `dupuuid.js`; `checkprocs.js`, `carryprocs.js`, `checknames.js`, `checkvendorchanges.js`, `diffbuilds.js`, `delta-check.js` (гейты) |
+| `config\update\SSL\` | `regmerge.js` (предопределённые БСП по `<Item id>`), `checkpredefined.js`, `checkaccesslists.js`, `checkplancontent.js`, `fixplancontent.js` |
+| `other\` | `pdftext.js` (извлечение текста из PDF) |
 
-## Название и описание
-Название проекта должно быть простым и понятным (чаще всего это одно слово).
-Описание должно описывать основные функции проекта, включая его особенности и назначение. 
-Если у вашего проекта есть альтернативные проекты, то в описании можно перечислить ключевые отличия, которые выделяют ваш проект на фоне всех остальных.
+**Проектные** инструменты и данные остаются в каталоге проекта (пример:
+`<проект>\_work\scripts\build_v1.ps1`, `checkmods.js`, `sets.js`; списки — `_work\lists`).
 
-## Установка и настройка
-Также в `README` файле рекомендуется перечислить необходимые инструкции для установки, 
-будь то использование пакетных менеджеров (например, `Homebrew` на MacOS или `apt` на Linux), 
-зависимости, которые могут понадобиться в ходе использования, а также шаги по их настройке.
-
-## Совместная разработка
-Можно добавить информацию о том, как принять участие в разработке вашего проекта, как стать непосредственным участником, правила оформления pull-requests и т.д.
-
-## Контакты
-Ссылки на внешние ресурсы, такие как документация, блог, страница проекта в социальных сетях, сообщество проекта и т.д.
-
-## Статус проекта
-В данном разделе рекомендуется указывать, на какой стадии находится проект, активно разрабатывается или находится в стадии застоя.
-Если же проект готов и во всю используется, можно указывать актуальную версию, а также последние изменения, которые были сделаны с момента предыдущего релиза.
-
-***
-
-# Полезные ссылки
-
-***
-
-## Работа с проектом
-
-- [ ] [Как создать проект](https://docs.gitflic.ru/project/project_create)
-- [ ] [Как импортировать проект](https://docs.gitflic.ru/project/import_base)
-- [ ] [Запросы на слияние](https://docs.gitflic.ru/project/merge_request)
-- [ ] [Зеркалирование проекта](https://docs.gitflic.ru/project/mirror)
-- [ ] [Импортировать проект с GitLab](https://docs.gitflic.ru/project/import)
-
-## Команды
-- [ ] [Создание команды](https://docs.gitflic.ru/team/create)
-- [ ] [Обзор команды](https://docs.gitflic.ru/team/view)
-- [ ] [Настройка команды](https://docs.gitflic.ru/team/settings)
-
-## Реестр пакетов
-- [ ] [Реестр пакетов](https://docs.gitflic.ru/registry/package)
-- [ ] [PyPi](https://docs.gitflic.ru/registry/pypi_registry)
-- [ ] [Generic](https://docs.gitflic.ru/registry/generic_registry)
-- [ ] [Maven](https://docs.gitflic.ru/registry/maven_registry)
-- [ ] [Docker](https://docs.gitflic.ru/registry/docker)
-
-## Компании
-- [ ] [Создание компании](https://docs.gitflic.ru/company/create)
-- [ ] [Обзор компании](https://docs.gitflic.ru/company/view)
-- [ ] [Тарифы и оплата](https://docs.gitflic.ru/company/price)
-- [ ] [Запуск агента компании](https://docs.gitflic.ru/company/saas_runner_setup)
-
-## CI/CD
-- [ ] [Что такое GitFlic CI/CD](https://docs.gitflic.ru/cicd/introduction)
-- [ ] [Задача (Job)](https://docs.gitflic.ru/cicd/job)
-- [ ] [Конвейер (pipeline)](https://docs.gitflic.ru/cicd/pipeline)
-- [ ] [Агенты](https://docs.gitflic.ru/cicd/agent)
-- [ ] [Справочник для .yaml файла](https://docs.gitflic.ru/cicd/gitflic-ci-yaml)
-
-## API
-- [ ] [Введение в GitFlic API](https://docs.gitflic.ru/api/intro)
-- [ ] [Методы для администратора](https://docs.gitflic.ru/api/admin)
-- [ ] [Получение access токена](https://docs.gitflic.ru/api/access-token)
-
-
-## Панель администратора
-- [ ] [Панель администратора](https://docs.gitflic.ru/admin_panel/intro)
-- [ ] [Панель управления](https://docs.gitflic.ru/admin_panel/dashboard)
-- [ ] [Настройка LDAP](https://docs.gitflic.ru/admin_panel/ldap)
-- [ ] [Ключевые настройки](https://docs.gitflic.ru/admin_panel/settings)
-
-## Общая информация
-- [ ] [Глоссарий](https://docs.gitflic.ru/common/gloss)
-- [ ] [Права доступа ролей](https://docs.gitflic.ru/common/manage_roles)
-- [ ] [Вебхуки](https://docs.gitflic.ru/common/webhook)
+Все универсальные инструменты принимают пути аргументами; списки/манифесты — тоже аргументы, поэтому
+переносить их вместе со скриптами не нужно. `mergetypes.js` берёт карту переименований из необязательного
+аргумента `renames.json`; `SSL\regmerge.js` — список каталогов для `Predefined.xml` (по умолчанию типовые
+каталоги доп. реквизитов и идентификаторов БСП).
