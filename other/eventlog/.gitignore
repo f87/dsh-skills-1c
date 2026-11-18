@@ -1,0 +1,23 @@
+# Данные журнала и артефакты разбора в хранилище не попадают (AGENTS.md, §8).
+# Каталог 1Cv8Log бывает в десятки гигабайт — коммитить его нельзя.
+*.lgp
+*.lgf
+*.lgd
+*.lgx
+*.lgc
+
+# Базы и выгрузки.
+*.sqlite
+*.sqlite3
+*.db
+*.tsv
+*.csv
+dict.sql
+lgf.json
+out/
+
+# Мусор Python и ОС.
+__pycache__/
+*.pyc
+Thumbs.db
+.DS_Store

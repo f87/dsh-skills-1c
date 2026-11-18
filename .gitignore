@@ -6,6 +6,9 @@ logs/
 *.dt
 *.cfe
 *.log
+*.lgp
+*.lgf
+*.sqlite
 
 # Мусор ОС и редакторов.
 Thumbs.db
